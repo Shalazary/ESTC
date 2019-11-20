@@ -1,0 +1,4 @@
+/projects/*/*
+!main.c
+!main.h
+Makefile
