@@ -1,3 +1,5 @@
-/projects/*/*
-!main.c
-!main.h
+*.elf
+*.elf.map
+*.o
+*.d
+*.bin
