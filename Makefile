@@ -20,6 +20,9 @@ common:
 lab1: spl common
 	make -C $(LABS_DIR)/led_test
 
+lab2: spl common
+	make -C $(LABS_DIR)/task_1_gpio_basics 
+
 clean:
 	make -C $(SPL_PATH) clean
 	make -C $(COMMON_PATH) clean

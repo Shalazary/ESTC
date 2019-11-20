@@ -6,7 +6,7 @@ endif
 ###############################################################################
 #                                 Executables                                 #
 ###############################################################################
-PREFIX    ?= arm-none-eabi
+PREFIX    ?= /home/shalazary/gcc-arm-none-eabi-8-2019-q3-update/bin/arm-none-eabi
 
 CC        := $(PREFIX)-gcc
 CXX       := $(PREFIX)-g++
@@ -16,7 +16,7 @@ AS        := $(PREFIX)-as
 OBJCOPY   := $(PREFIX)-objcopy
 OBJDUMP   := $(PREFIX)-objdump
 GDB       := $(PREFIX)-gdb
-STFLASH    = $(shell which st-flash)
+STFLASH    = /home/shalazary/stlink-1.5.1/build/Release/st-flash
 
 ###############################################################################
 #                             Include directories                             #
