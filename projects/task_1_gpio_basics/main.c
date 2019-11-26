@@ -83,12 +83,12 @@ int main(void)
 	  {
 	  blink_led(GPIOA, GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 , BLINK_MUL_FAST);
 	  blink_led(GPIOA, 0, BLINK_MUL_FAST);
-	  } /*else if(i == 2)
+	  } else if(i == 2)
 	  {
 	  blink_led(GPIOA, GPIO_Pin_8, BLINK_MUL_LONG);
 	  blink_led(GPIOA, GPIO_Pin_9, BLINK_MUL_LONG);
 	  blink_led(GPIOA, GPIO_Pin_10 , BLINK_MUL_LONG);
-	  }*/
+	  }
 	  i %= 2;
   }
 }
