@@ -41,55 +41,34 @@ int main(void)
 
   /* Turn all the leds off */
   GPIO_SetBits(GPIOA, GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10);
-  RCC_DeInit();
-  RCC_PLLConfig(RCC_PLLSource_HSI,8, 168, 2,4);
+  RCC_HSEConfig(RCC_HSE_ON);
+  RCC_WaitForHSEStartUp();
+  RCC_PLLConfig(RCC_PLLSource_HSI,8, 84, 2,4);
   RCC_PLLCmd(ENABLE);
   RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
-  int8_t i = 0, oscillator_selection = 0;
+  int8_t oscillator_selection = 0;
   while (1)
   {
-	  int state = GPIO_ReadInputDataBit(GPIOE, GPIO_Pin_0);
 	  if(!GPIO_ReadInputDataBit(GPIOE, GPIO_Pin_1))
 	  {
-                blink_led(GPIOA, GPIO_Pin_8, BLINK_MUL_FAST);
-                blink_led(GPIOA, GPIO_Pin_9, BLINK_MUL_FAST);
+                blink_led(GPIOA, GPIO_Pin_8, BLINK_MUL_LONG);
+                blink_led(GPIOA, GPIO_Pin_9, BLINK_MUL_LONG);
+		RCC_SYSCLKConfig(RCC_SYSCLKSource_HSI);
+		RCC_PLLCmd(DISABLE);
 	  	oscillator_selection  = (oscillator_selection + 1) % 2;
-		RCC_DeInit();
 		if(oscillator_selection)
                 {
-                  RCC_HSEConfig(RCC_HSE_ON);
-                  RCC_WaitForHSEStartUp();
-                  RCC_PLLConfig(RCC_PLLSource_HSE, 4, 84, 2, 4);
-
+			RCC_PLLConfig(RCC_PLLSource_HSE, 8, 168, 2, 4);
                 } else
                 {
-                  RCC_PLLConfig(RCC_PLLSource_HSI,8, 168, 2,4);
+                	RCC_PLLConfig(RCC_PLLSource_HSI,8, 168, 2,4);
                 }
-		  RCC_PLLCmd(ENABLE);
-		  RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
+		RCC_PLLCmd(ENABLE);
+		RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
 	  }		
-	  i += !state;
-	  if(!state)
-	  {
-	  blink_led(GPIOA, GPIO_Pin_8, BLINK_MUL_FAST);
-	  blink_led(GPIOA, GPIO_Pin_9, BLINK_MUL_FAST);
-	  }
-	  if(i == 0)
-	  {
 	  blink_led(GPIOA, GPIO_Pin_8 , BLINK_MUL_FAST);
        	  blink_led(GPIOA, GPIO_Pin_8 | GPIO_Pin_9, BLINK_MUL_FAST);
 	  blink_led(GPIOA, GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 , BLINK_MUL_FAST);
-	  } else if(i == 1)
-	  {
-	  blink_led(GPIOA, GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 , BLINK_MUL_FAST);
-	  blink_led(GPIOA, 0, BLINK_MUL_FAST);
-	  } else if(i == 2)
-	  {
-	  blink_led(GPIOA, GPIO_Pin_8, BLINK_MUL_LONG);
-	  blink_led(GPIOA, GPIO_Pin_9, BLINK_MUL_LONG);
-	  blink_led(GPIOA, GPIO_Pin_10 , BLINK_MUL_LONG);
-	  }
-	  i %= 2;
   }
 }
 
