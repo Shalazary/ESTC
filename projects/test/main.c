@@ -21,27 +21,27 @@ int main(void)
   GPIO_InitTypeDef GPIO_InitStructure;
 
   /* Enable peripheral clock for LEDs and buttons port */
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
 
   /* Init LEDs */
-  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10;
+  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14;
   GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
+  GPIO_Init(GPIOD, &GPIO_InitStructure);
 
   /* Init buttons */
-  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_0 | GPIO_Pin_1;
+  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_0;
   GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-  GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
-  GPIO_Init(GPIOE, &GPIO_InitStructure);
+  GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_DOWN;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);
 
   /* Turn all the leds off */
-  GPIO_SetBits(GPIOA, GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10);
+  GPIO_ResetBits(GPIOD, GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14);
 
   /* Set SYSCLK based on PLL */
   RCC_HSEConfig(RCC_HSE_ON);
@@ -52,16 +52,14 @@ int main(void)
   RCC_PLLCmd(ENABLE);
   RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
 
-  int8_t oscillator_selection = 0;
+  int8_t oscillator_selection = 0, led_counter = 0;
   while (1)
   {
     /* Select PLL source */
-	  if(!GPIO_ReadInputDataBit(GPIOE, GPIO_Pin_1))
+	  if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0))
 	  {
-      /* Click indicator R->G */
-      blink_led(GPIOA, GPIO_Pin_8, BLINK_MUL_LONG);
-      blink_led(GPIOA, GPIO_Pin_9, BLINK_MUL_LONG);
-
+      blink_led(GPIOD, GPIO_Pin_12, BLINK_MUL_FAST);
+      blink_led(GPIOD, GPIO_Pin_13, BLINK_MUL_FAST);
 		  RCC_SYSCLKConfig(RCC_SYSCLKSource_HSI);
 		  RCC_PLLCmd(DISABLE);
 	  	oscillator_selection  = (oscillator_selection + 1) % 2;
@@ -74,12 +72,10 @@ int main(void)
       }
 		  RCC_PLLCmd(ENABLE);
 		  RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
-	  }		 
-    
-    /* Flash LEDs */
-    blink_led(GPIOA, GPIO_Pin_8, BLINK_MUL_FAST);
-    blink_led(GPIOA, GPIO_Pin_8 | GPIO_Pin_9, BLINK_MUL_FAST);
-	  blink_led(GPIOA, GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10, BLINK_MUL_FAST);
+	  }		
+    blink_led(GPIOD, GPIO_Pin_12 << led_counter | GPIO_Pin_13 << led_counter | 
+                   GPIO_Pin_14 << led_counter, BLINK_MUL_FAST);
+    led_counter = (led_counter + 1) % 3;
   }
 }
 
@@ -87,7 +83,7 @@ void blink_led(GPIO_TypeDef * port, uint16_t pins, blink_mul_t multiplier)
 {
   uint32_t k = 0;
 
-  GPIO_ResetBits(port, pins);
-  for (k = 0; k < SWITCH_DELAY * multiplier; ++k);
   GPIO_SetBits(port, pins);
+  for (k = 0; k < SWITCH_DELAY * multiplier; ++k);
+  GPIO_ResetBits(port, pins);
 }
