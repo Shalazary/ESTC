@@ -55,6 +55,7 @@ int main(void)
   int8_t oscillator_selection = 0;
   while (1)
   {
+<<<<<<< HEAD
     /* Select PLL source */
 	  if(!GPIO_ReadInputDataBit(GPIOE, GPIO_Pin_1))
 	  {
@@ -79,6 +80,31 @@ int main(void)
     /* Flash LEDs */
     blink_led(GPIOA, GPIO_Pin_8, BLINK_MUL_FAST);
     blink_led(GPIOA, GPIO_Pin_8 | GPIO_Pin_9, BLINK_MUL_FAST);
+=======
+	  /* Select PLL source */
+	  if(!GPIO_ReadInputDataBit(GPIOE, GPIO_Pin_1))
+	  {
+		  /* Click indicator R->G */
+		  blink_led(GPIOA, GPIO_Pin_8, BLINK_MUL_LONG);
+		  blink_led(GPIOA, GPIO_Pin_9, BLINK_MUL_LONG);
+		  
+		  RCC_SYSCLKConfig(RCC_SYSCLKSource_HSI);
+		  RCC_PLLCmd(DISABLE);
+	  	  oscillator_selection  = (oscillator_selection + 1) % 2;
+		  if(oscillator_selection)
+		  {
+			  RCC_PLLConfig(RCC_PLLSource_HSE, 8, 168, 2, 4);
+		  } else
+		  {
+			  RCC_PLLConfig(RCC_PLLSource_HSI,8, 168, 2,4);
+		  }
+		  RCC_PLLCmd(ENABLE);
+		  RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
+	  }		 
+	  /* Flash LEDs */
+	  blink_led(GPIOA, GPIO_Pin_8, BLINK_MUL_FAST);
+	  blink_led(GPIOA, GPIO_Pin_8 | GPIO_Pin_9, BLINK_MUL_FAST);
+>>>>>>> bc1f14f6948f1ab52c324aef329d694430dae085
 	  blink_led(GPIOA, GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10, BLINK_MUL_FAST);
   }
 }
