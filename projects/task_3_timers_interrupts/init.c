@@ -44,7 +44,7 @@ void configure_buttons()
    EXTI_StructInit(&buttons_exti_init_structure);
    buttons_exti_init_structure.EXTI_Line    = EXTI_Line0;
    buttons_exti_init_structure.EXTI_Mode    = EXTI_Mode_Interrupt;
-   buttons_exti_init_structure.EXTI_Trigger = EXTI_Trigger_Rising;
+   buttons_exti_init_structure.EXTI_Trigger = EXTI_Trigger_Falling;
    buttons_exti_init_structure.EXTI_LineCmd = ENABLE;
    EXTI_Init(&buttons_exti_init_structure);
 
@@ -66,7 +66,7 @@ void configure_timers()
    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
    /* Initialize timer */
    TIM_TimeBaseStructInit(&timer_init_structure);
-   timer_init_structure.TIM_Prescaler     = 84;  /* Scale value to microseconds */
+   timer_init_structure.TIM_Prescaler     = 83;  /* Scale value to microseconds */
    timer_init_structure.TIM_CounterMode   = TIM_CounterMode_Up;
    timer_init_structure.TIM_Period        = 1000000;   /* Gives us a second interval */
    timer_init_structure.TIM_ClockDivision = TIM_CKD_DIV1; /* Tell timer to divide clocks */

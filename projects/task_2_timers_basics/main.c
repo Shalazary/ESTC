@@ -81,11 +81,10 @@ int main(void)
          GPIO_SetBits(GPIOA, GPIO_Pin_8 << led_counter);
          led_counter = (3 + (led_counter - led_direction) % 3) % 3;
       }
-
       /* Handle button press */
       button_state = GPIO_ReadInputDataBit(GPIOE, GPIO_Pin_0);
-      /* While button is pressed flesh in reverse order */
-      if (previous_button_state != button_state)
+      /* When button is released reverse order */
+      if (previous_button_state == Bit_RESET && button_state == Bit_SET)
       {
          led_direction = -led_direction;
       }
