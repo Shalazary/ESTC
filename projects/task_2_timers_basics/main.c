@@ -1,7 +1,7 @@
 #include <stm32f4xx.h>
 /*
  * @tasks Flash LEDs with 1 sec pause
- *        While button is pressed change flashing order
+ *        By pressing the button change order
  */
 static
 int configure_leds(void)
@@ -70,6 +70,7 @@ int main(void)
 
    while(1)
    {
+        
       timer_value = TIM_GetCounter(TIM2);
       /* At the firs half LED is lights up, at the second goes off */  
       if (timer_value == 0)

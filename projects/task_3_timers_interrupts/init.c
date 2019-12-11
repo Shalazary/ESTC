@@ -44,7 +44,7 @@ void configure_buttons()
    EXTI_StructInit(&buttons_exti_init_structure);
    buttons_exti_init_structure.EXTI_Line    = EXTI_Line0;
    buttons_exti_init_structure.EXTI_Mode    = EXTI_Mode_Interrupt;
-   buttons_exti_init_structure.EXTI_Trigger = EXTI_Trigger_Falling;
+   buttons_exti_init_structure.EXTI_Trigger = EXTI_Trigger_Rising;
    buttons_exti_init_structure.EXTI_LineCmd = ENABLE;
    EXTI_Init(&buttons_exti_init_structure);
 
@@ -64,11 +64,12 @@ void configure_timers()
 
    /* Initialize peripheral clock */
    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+   
    /* Initialize timer */
    TIM_TimeBaseStructInit(&timer_init_structure);
    timer_init_structure.TIM_Prescaler     = 83;  /* Scale value to microseconds */
    timer_init_structure.TIM_CounterMode   = TIM_CounterMode_Up;
-   timer_init_structure.TIM_Period        = 1000000;   /* Gives us a second interval */
+   timer_init_structure.TIM_Period        = 1000000 - 1;   /* Gives us a second interval */
    timer_init_structure.TIM_ClockDivision = TIM_CKD_DIV1; /* Tell timer to divide clocks */
    timer_init_structure.TIM_RepetitionCounter = 0;
    TIM_TimeBaseInit(TIM2, &timer_init_structure);
@@ -81,6 +82,25 @@ void configure_timers()
    timer_nvic_init_structure.NVIC_IRQChannelCmd = ENABLE;
    NVIC_Init(&timer_nvic_init_structure);
 
-   /* Start timer */
+   /* Initialize TIM3 for button interapt */
+   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+   timer_init_structure.TIM_Prescaler = 83;
+   timer_init_structure.TIM_CounterMode = TIM_CounterMode_Up;
+   timer_init_structure.TIM_Period = 500000 - 1;
+   timer_init_structure.TIM_ClockDivision = TIM_CKD_DIV1;
+   timer_init_structure.TIM_RepetitionCounter = 0;
+   TIM_TimeBaseInit(TIM3, &timer_init_structure);
+
+
+   /* Configure timer interrupts */
+   TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
+   timer_nvic_init_structure.NVIC_IRQChannel = TIM3_IRQn;
+   timer_nvic_init_structure.NVIC_IRQChannelPreemptionPriority = 0;
+   timer_nvic_init_structure.NVIC_IRQChannelSubPriority = 1;
+   timer_nvic_init_structure.NVIC_IRQChannelCmd = ENABLE;
+   NVIC_Init(&timer_nvic_init_structure);
+
+   /* Start timers */
+   TIM_Cmd(TIM3, ENABLE);
    TIM_Cmd(TIM2, ENABLE);
 }
