@@ -16,7 +16,7 @@ AS        := $(PREFIX)-as
 OBJCOPY   := $(PREFIX)-objcopy
 OBJDUMP   := $(PREFIX)-objdump
 GDB       := $(PREFIX)-gdb
-STFLASH    = ~/stlink-1.5.1/build/Release/st-flash
+STFLASH    = /home/shalazary/stlink-1.5.1/build/Release/st-flash
 
 ###############################################################################
 #                             Include directories                             #
